@@ -4,11 +4,6 @@
 
 typedef unsigned char uint8;
 
-static void sleep(void) {
-    clock_t start = clock();
-    while ((clock_t)(clock() - start) < 6);
-}
-
 int main(void) {
     uint8 x = 1, y = 1;
     uint8 px = x, py = y;
@@ -22,18 +17,20 @@ int main(void) {
     cbm_k_bsout(142);    /* uppercase / graphics  */
 
     for (;;) {
-        waitvsync();
-        cputcxy(x, y, 113);
+        unsigned char i;
+        for (i = 0; i < 6; ++i)
+            waitvsync();
+
         cputcxy(px, py, 32);
-        sleep();
+        cputcxy(x, y, 113);
 
         px = x;
-        x = x + dx;
-        if (!((0 < x) && (x < max_x))) dx = -dx;
-
+        x += dx;
+        if (x == 0 || x == max_x) dx = -dx;
         py = y;
-        y = y + dy;
-        if (!((0 < y) && (y < max_y))) dy = -dy;
+
+        y += dy;
+        if (y == 0 || y == max_y) dy = -dy;
     }
 
     return 0;
