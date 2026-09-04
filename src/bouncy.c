@@ -4,14 +4,6 @@
 
 typedef unsigned char uint8;
 
-static void drawBall(uint8 x, uint8 y) {
-    cputcxy(x, y, 113);
-}
-
-static void clearBall(uint8 x, uint8 y) {
-    cputcxy(x, y, 32);
-}
-
 static void sleep(void) {
     clock_t start = clock();
     while ((clock_t)(clock() - start) < 6);
@@ -19,6 +11,7 @@ static void sleep(void) {
 
 int main(void) {
     uint8 x = 1, y = 1;
+    uint8 px = x, py = y;
     uint8 dx = 1, dy = 1;
     uint8 max_x, max_y;
 
@@ -29,13 +22,16 @@ int main(void) {
     cbm_k_bsout(142);    /* uppercase / graphics  */
 
     for (;;) {
-        drawBall(x,y);
+        waitvsync();
+        cputcxy(x, y, 113);
+        cputcxy(px, py, 32);
         sleep();
-        clearBall(x,y);
 
+        px = x;
         x = x + dx;
         if (!((0 < x) && (x < max_x))) dx = -dx;
 
+        py = y;
         y = y + dy;
         if (!((0 < y) && (y < max_y))) dy = -dy;
     }
